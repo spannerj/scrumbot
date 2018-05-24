@@ -68,6 +68,7 @@ def job():
     global phrases_list
 
     if phrases_list.phrase_count() == 0:
+        print('Restarting phrases - ' + str(datetime.now()))
         git_phrase_list = call_git()
 
         for text in git_phrase_list:
@@ -96,7 +97,7 @@ def run_on_start():
 def call_git():
     # call the gist to return the latest phrases
     global phrases_list
-    log('call git')
+    log('requesting phrases')
     url = 'https://api.github.com/gists/f37d184552dd58ee835d8c281ea333f1'
     r = requests.get(url)
     phrases_json = json.loads(r.text)
@@ -121,14 +122,12 @@ def check_for_new_phrases():
         phrases_list.remove_old_phrase(old_phrase)
 
 def log(text):
-    # print("\033[K")
-    # print("Last phrase read was - " + text, end="\r", flush=True)
     sys.stdout.write("\033[K")
     sys.stdout.write("Last phrase read was - " + text + "\r")
     sys.stdout.flush()
 
 def stand_up():
-    print("Stand up toot toot toot " + str(datetime.now()))
+    log("Stand up toot toot toot " + str(datetime.now()))
     system('say {}'.format('Stand up toot toot toot'))
     # sleep for 30 mins (1800 seconds)
     time.sleep(1800)
@@ -136,7 +135,7 @@ def stand_up():
 
 def bed_time():
     # Turn off between 6pm and 7am (46800 seconds)
-    print("Going to bed now " + str(datetime.now()))
+    log("Going to bed now " + str(datetime.now()))
     system('say {}'.format("That's enough for today, I'm outta here!"))
     # sleep 13 hours 6pm to 7am
     time.sleep(46800)
@@ -144,7 +143,7 @@ def bed_time():
 
 def weekendybobs():
     # Turn off between 6pm Friday and 7am Monday(219600 seconds)
-    print("Time to party! Weekendybobs " + str(datetime.now()))
+    log("Time to party! Weekendybobs " + str(datetime.now()))
     system('say {}'.format("It's Friday baby, time to party!"))
     # sleep 61 hours fri 6pm - mon 7am
     time.sleep(219600)
