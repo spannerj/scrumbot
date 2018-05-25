@@ -22,9 +22,13 @@ class Phrases(list):
         return len(self)
 
     def phrases_remaining(self):
-        for phrase in self:
-            if phrase.used is False:
-                return True
+        if len(self) == 0:
+            return False
+        else:
+            for phrase in self:
+                if phrase.used is False:
+                    return True
+        return False
 
     def get_random_phrase(self):
         random_list = []
@@ -67,16 +71,9 @@ phrases_list = Phrases()
 def job():
     global phrases_list
 
-    if phrases_list.phrase_count() == 0:
+    if phrases_list.phrases_remaining() == False:
         print('Restarting phrases - ' + str(datetime.now()))
-        git_phrase_list = call_git()
-
-        for text in git_phrase_list:
-            phrase = Phrase(text)
-            phrases_list.add_new_phrase(phrase)
-
-    if not phrases_list.phrases_remaining():
-        phrases_list.reset_list()
+        phrases_list.reset_list()  
 
     # randomly shuffle the list before picking the one to say
     phrase = phrases_list.get_random_phrase()
@@ -84,19 +81,24 @@ def job():
     # remove any double danglers (we'll add them when we 'say' the phrase)
     phrase = re.sub('["]', '', phrase)
 
-    log(phrase)
+    log(phrase, True)
 
     # say the phrase (double danglers allow for punctuation)
     system('say {}'.format('"' + phrase + '"'))
 
 def run_on_start():
+    global phrases_list
+
     print('Job started at - ' + str(datetime.now()))
+    file_phrases_list = read_phrases_from_file()
+    for text in file_phrases_list:
+        new_phrase = Phrase(text)
+        phrases_list.add_new_phrase(new_phrase)
     job()
     return schedule.CancelJob
 
 def call_git():
     # call the gist to return the latest phrases
-    global phrases_list
     log('requesting phrases')
     url = 'https://api.github.com/gists/f37d184552dd58ee835d8c281ea333f1'
     r = requests.get(url)
@@ -104,12 +106,16 @@ def call_git():
     phrases = phrases_json['files']['scrumbot_phrases.txt']['content']
     return phrases.splitlines()
 
+def read_phrases_from_file():
+    log('reading phrases from file')
+    with open('scrumbot_phrases.txt') as f:
+        return f.read().splitlines()
 
 def check_for_new_phrases():
     # update the master phrase list and add new phrases to the working list
     global phrases_list
     log('check new phrases')
-    git_phrases_list = call_git()
+    git_phrases_list = read_phrases_from_file()
     phrases_set = phrases_list.as_set()
     to_add = list(set(git_phrases_list) - phrases_set)
     to_remove = list(phrases_set - set(git_phrases_list))
@@ -121,9 +127,14 @@ def check_for_new_phrases():
     for old_phrase in to_remove:
         phrases_list.remove_old_phrase(old_phrase)
 
-def log(text):
+def log(text, is_phrase=False):
     sys.stdout.write("\033[K")
-    sys.stdout.write("Last phrase read was - " + text + "\r")
+    if is_phrase:
+        sys.stdout.write("Last phrase read was - " + text + "\r")
+        # sys.stdout.write("Last phrase read was - " + text + "\n")
+    else:
+       sys.stdout.write(text + "\r") 
+    #    sys.stdout.write(text + "\n") 
     sys.stdout.flush()
 
 def stand_up():
@@ -150,7 +161,7 @@ def weekendybobs():
 
 
 schedule.every(2).seconds.do(run_on_start)
-schedule.every(24).seconds.do(job)
+schedule.every(3).seconds.do(job)
 schedule.every(299).seconds.do(check_for_new_phrases)
 schedule.every().friday.at("18:00").do(weekendybobs)
 schedule.every().day.at("10:00").do(stand_up)
