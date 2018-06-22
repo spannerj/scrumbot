@@ -73,7 +73,7 @@ def job():
 
     if phrases_list.phrases_remaining() == False:
         print('Restarting phrases - ' + str(datetime.now()))
-        phrases_list.reset_list()  
+        phrases_list.reset_list()
 
     # randomly shuffle the list before picking the one to say
     phrase = phrases_list.get_random_phrase()
@@ -133,8 +133,8 @@ def log(text, is_phrase=False):
         sys.stdout.write("Last phrase read was - " + text + "\r")
         # sys.stdout.write("Last phrase read was - " + text + "\n")
     else:
-       sys.stdout.write(text + "\r") 
-    #    sys.stdout.write(text + "\n") 
+       sys.stdout.write(text + "\r")
+    #    sys.stdout.write(text + "\n")
     sys.stdout.flush()
 
 def stand_up():
@@ -149,7 +149,10 @@ def bed_time():
     log("Going to bed now " + str(datetime.now()))
     system('say {}'.format("That's enough for today, I'm outta here!"))
     # sleep 13 hours 6pm to 7am
-    time.sleep(46800)
+    for x in range(780):
+        log(str(x))
+        time.sleep(60)
+    log('yawn')
 
 
 def weekendybobs():
@@ -160,12 +163,20 @@ def weekendybobs():
     time.sleep(219600)
 
 
+def russ():
+    # Turn off between 6pm Friday and 7am Monday(219600 seconds)
+    log("Remind Russ" + str(datetime.now()))
+    system('say {}'.format("Russ, have you taken your pills?"))
+
+
 schedule.every(2).seconds.do(run_on_start)
-schedule.every(3).seconds.do(job)
+schedule.every(180).seconds.do(job)
 schedule.every(299).seconds.do(check_for_new_phrases)
 schedule.every().friday.at("18:00").do(weekendybobs)
 schedule.every().day.at("10:00").do(stand_up)
+schedule.every().day.at("08:30").do(russ)
+schedule.every().day.at("18:00").do(bed_time)
 
 while True:
     schedule.run_pending()
-    time.sleep(2)
+    # time.sleep(2)
