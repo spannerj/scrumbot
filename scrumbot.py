@@ -174,7 +174,7 @@ def russ():
 
 
 schedule.every(2).seconds.do(run_on_start)
-schedule.every(4).seconds.do(job)
+schedule.every(180).seconds.do(job)
 schedule.every(299).seconds.do(check_for_new_phrases)
 schedule.every().friday.at("18:00").do(weekendybobs)
 schedule.every().day.at("10:00").do(stand_up)
