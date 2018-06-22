@@ -4,7 +4,7 @@ import json
 import re
 import schedule
 import time
-from datetime import datetime
+from datetime import datetime, time
 import random
 import sys
 
@@ -76,15 +76,39 @@ def job():
         phrases_list.reset_list()
 
     # randomly shuffle the list before picking the one to say
-    phrase = phrases_list.get_random_phrase()
+    phrase = phrases_list.get_random_phrase() 
+    speak(phrase)
 
+
+def ok_to_speak():
+     
+    now = datetime.now()
+
+    if now.weekday() > 4:
+        log('Its the freaking weekend baby, have me some fun')
+        return False
+
+    if (now.time() > time(10, 1)) and (now.time() < time(10, 30)):
+        log('Stand up if you love your job')
+        return False
+
+    if (now.time() > time(18, 30)) or (now.time() < time(7, 00)):
+        log('ZZZZZZZZZZZ')
+        return False
+
+    return True
+
+
+
+def speak(phrase):
     # remove any double danglers (we'll add them when we 'say' the phrase)
     phrase = re.sub('["]', '', phrase)
 
-    log(phrase, True)
+    if ok_to_speak():
+        log(phrase, True)
+        # say the phrase (double danglers allow for punctuation)
+        system('say {}'.format('"' + phrase + '"'))
 
-    # say the phrase (double danglers allow for punctuation)
-    system('say {}'.format('"' + phrase + '"'))
 
 def run_on_start():
     global phrases_list
@@ -97,19 +121,12 @@ def run_on_start():
     job()
     return schedule.CancelJob
 
-def call_git():
-    # call the gist to return the latest phrases
-    log('requesting phrases')
-    url = 'https://api.github.com/gists/f37d184552dd58ee835d8c281ea333f1'
-    r = requests.get(url)
-    phrases_json = json.loads(r.text)
-    phrases = phrases_json['files']['scrumbot_phrases.txt']['content']
-    return phrases.splitlines()
 
 def read_phrases_from_file():
     log('reading phrases from file')
     with open('scrumbot_phrases.txt') as f:
         return f.read().splitlines()
+
 
 def check_for_new_phrases():
     # update the master phrase list and add new phrases to the working list
@@ -127,56 +144,42 @@ def check_for_new_phrases():
     for old_phrase in to_remove:
         phrases_list.remove_old_phrase(old_phrase)
 
+
 def log(text, is_phrase=False):
     sys.stdout.write("\033[K")
     if is_phrase:
         sys.stdout.write("Last phrase read was - " + text + "\r")
-        # sys.stdout.write("Last phrase read was - " + text + "\n")
     else:
        sys.stdout.write(text + "\r")
-    #    sys.stdout.write(text + "\n")
     sys.stdout.flush()
 
 def stand_up():
-    log("Stand up toot toot toot " + str(datetime.now()))
-    system('say {}'.format('Stand up toot toot toot'))
-    # sleep for 30 mins (1800 seconds)
-    time.sleep(1800)
+    log('Stand up toot toot toot', False)
+    speak('Stand up toot toot toot')
 
 
 def bed_time():
-    # Turn off between 6pm and 7am (46800 seconds)
-    log("Going to bed now " + str(datetime.now()))
-    system('say {}'.format("That's enough for today, I'm outta here!"))
-    # sleep 13 hours 6pm to 7am
-    for x in range(780):
-        log(str(x))
-        time.sleep(60)
-    log('yawn')
+    log("ZZZZZZZZZZZ", False)
+    speak("That's enough for today, I'm outta here!")
 
 
 def weekendybobs():
-    # Turn off between 6pm Friday and 7am Monday(219600 seconds)
-    log("Time to party! Weekendybobs " + str(datetime.now()))
-    system('say {}'.format("It's Friday baby, time to party!"))
-    # sleep 61 hours fri 6pm - mon 7am
-    time.sleep(219600)
+    log("It's the freakin weekend baby, have me some fun", False)
+    speak("It's the freakin weekend baby, have me some fun")
 
 
 def russ():
-    # Turn off between 6pm Friday and 7am Monday(219600 seconds)
-    log("Remind Russ" + str(datetime.now()))
-    system('say {}'.format("Russ, have you taken your pills?"))
+    log('Take your pills Russ', False)
+    speak("Russ, have you taken your pills?")
 
 
 schedule.every(2).seconds.do(run_on_start)
-schedule.every(180).seconds.do(job)
+schedule.every(4).seconds.do(job)
 schedule.every(299).seconds.do(check_for_new_phrases)
 schedule.every().friday.at("18:00").do(weekendybobs)
 schedule.every().day.at("10:00").do(stand_up)
 schedule.every().day.at("08:30").do(russ)
-schedule.every().day.at("18:00").do(bed_time)
+schedule.every().day.at("18:30").do(bed_time)
 
 while True:
     schedule.run_pending()
-    # time.sleep(2)
