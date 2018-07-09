@@ -4,6 +4,7 @@
 "5 points"
 "Bless you"
 "Hakuna Matata"
+"It's coming home"
 "Unexpected item in bagging area"
 "Can't touch this"
 "Accounts suck!"
@@ -41,6 +42,7 @@
 "vagrant ssh"
 "Ed Balls"
 "Use the force Harry"
+"You know nothing Matt, Sher"
 "Just do it"
 "how fascinating"
 "Pen Pineapple Apple Pen"
@@ -202,7 +204,6 @@
 "I'm Ron Burgundy?"
 "Stay classy San Diego"
 "Stay classy Plymouth"
-"last night I dreamt I went to Mandalay again"
 "Super sexy engineer"
 "at school I had a tiny peanut"
 "Paul has a melty after eight face"
@@ -246,14 +247,12 @@
 "Team Block beard suck"
 "I would do anything for love, but I wont do that."
 We know where you lives
-She keeps a Moet and Chandon in a pretty cabinet
 "Help me, I can't feel my legs"
 "Do you smell burning?"
 "Nobody panic, whatever just broke we can fix it"
 "Pirates eat Pineapples for breakfast"
 "Be more Pirate"
 Dead or alive your coming with me
-"I got 99 problems but then I implemented a block chain and now I have an exponentially increasing number of problems"
 "Scrum bot says no."
 "Scrum bot is watching, always."
 "Scrum bot disapproves."
@@ -271,6 +270,9 @@ Dead or alive your coming with me
 "Scrum bot's keyboard has no backspace button. Scrum bot doesn't make mistakes."
 "Scrum bot doesn't need a watch. Scrum bot decides what time it is."
 "Scrum bot loves you. [[slnc 600]] Yes, you."
+"Scrum bots uptime is 100%. Scrum bot will sleep when it's dead."
+"Scrum bots calendar goes straight from 31st March to the 2nd April. Nobody fools scrum bot."
+"Scrum bot deploys to production 15 times a day."
 "Jencer Spaygo is my hero."
 "Jencer Spaygo uses 7% of the mainframe CPU"
 "Jencer Spaygo is reassuringly expensive"
@@ -283,3 +285,4 @@ And now for something completely different.
 "It's not the glasses, it's your face that's the problem."
 Shut the duck up
 Blockchain, blockchain, blockchain.
+"Never tell Scrum Bot the odds."

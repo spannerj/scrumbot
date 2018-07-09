@@ -76,12 +76,12 @@ def job():
         phrases_list.reset_list()
 
     # randomly shuffle the list before picking the one to say
-    phrase = phrases_list.get_random_phrase() 
+    phrase = phrases_list.get_random_phrase()
     speak(phrase)
 
 
 def ok_to_speak():
-     
+
     now = datetime.now()
 
     if now.weekday() > 4:
@@ -92,12 +92,11 @@ def ok_to_speak():
         log('Stand up if you love your job')
         return False
 
-    if (now.time() > time(18, 30)) or (now.time() < time(7, 00)):
+    if (now.time() > time(17, 00)) or (now.time() < time(7, 00)):
         log('ZZZZZZZZZZZ')
         return False
 
     return True
-
 
 
 def speak(phrase):
